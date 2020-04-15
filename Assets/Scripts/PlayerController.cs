@@ -16,15 +16,17 @@ public class PlayerController : MonoBehaviour
     [Range(1, 20)]
     public float jumpForce = 5;
     public float slideSpeed = 5;
-    //public float wallJumpLerp = 10;
+    public float wallJumpLerp = 10;
 
     private Rigidbody2D rb;
 
     private Collision coll;
 
-    public bool canMove;
+    public bool canMove = true;
     public bool wallJumped;
     public bool wallSlide;
+
+    public float wallJumpAngle = 45;
 
     // Start is called before the first frame update
     void Start()
@@ -41,7 +43,19 @@ public class PlayerController : MonoBehaviour
 
         Vector2 movement = new Vector3(moveHorizontal * speed, rb.velocity.y);
 
-        rb.velocity = movement;
+        //rb.velocity = movement;
+
+        if (canMove)
+        {
+            if (!wallJumped)
+            {
+                rb.velocity = new Vector2(movement.x, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = Vector2.Lerp(rb.velocity, (new Vector2(movement.x, rb.velocity.y)), wallJumpLerp * Time.deltaTime);
+            }
+        }
 
         //contre un mur sans toucher le sol
         if (coll.onWall && !coll.onGround)
@@ -49,6 +63,12 @@ public class PlayerController : MonoBehaviour
             //on glisse
             wallSlide = true;
             WallSlide();
+        }
+
+        if (coll.onGround)
+        {
+            wallJumped = false;
+            GetComponent<BetterJump>().enabled = true;
         }
 
         if (Input.GetButtonDown(jumpAxe))
@@ -66,11 +86,12 @@ public class PlayerController : MonoBehaviour
     public void Jump(Vector2 dir)
     {
         Debug.Log("JUMP !");
+        Debug.Log("Dir : " + dir);
 
         rb.velocity = new Vector2(rb.velocity.x, 0);
         rb.velocity += dir * jumpForce;
 
-        Debug.Log("velocity : " + rb.velocity);
+        //Debug.Log("velocity : " + rb.velocity);
 
     }
 
@@ -94,9 +115,12 @@ public class PlayerController : MonoBehaviour
         StopCoroutine(DisableMovement(0));
         StartCoroutine(DisableMovement(.1f));
 
-        Vector2 wallDir = coll.onRightWall ? Vector2.left : Vector2.right;
+        int wallOrientation = coll.onRightWall ? -1 : 1;
 
-        Jump((Vector2.up / 1.5f + wallDir / 1.5f));
+        float radAngle = Mathf.Deg2Rad * wallJumpAngle;
+        Vector2 angleDir = new Vector2(Mathf.Cos(radAngle) * wallOrientation, Mathf.Sin(radAngle));
+
+        Jump(angleDir);
 
         wallJumped = true;
     }
