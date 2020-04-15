@@ -13,7 +13,8 @@ public class PlayerController : MonoBehaviour
     private string jumpAxe = "";
 
     public float speed = 5;
-    public float jumpForce = 100;
+    [Range(1, 10)]
+    public float jumpForce = 5;
 
     private Rigidbody2D rb;
 
@@ -38,14 +39,14 @@ public class PlayerController : MonoBehaviour
         float moveHorizontal = Input.GetAxis(horizontalAxe);
         float moveVertical = Input.GetAxis(verticalAxe);
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        Vector2 movement = new Vector3(moveHorizontal * speed, rb.velocity.y);
 
-        rb.velocity = movement * speed;
+        rb.velocity = movement;
 
-        if (Input.GetButtonDown(jumpAxe) && isGrounded)
+        if (Input.GetButtonDown(jumpAxe))
         {
             Debug.Log("JUMP !");
-            rb.velocity += Vector2.up * jumpForce;
+            rb.velocity = Vector2.up * jumpForce;
             Debug.Log("velocity : " + rb.velocity);
             isGrounded = false;
         }
