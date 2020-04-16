@@ -4,45 +4,38 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private string horizontalAxe = "";
+	[SerializeField] private string verticalAxe = "";
+	[SerializeField] public string jumpAxe = "";
 
-    [SerializeField]
-    private string horizontalAxe = "";
-    [SerializeField]
-    private string verticalAxe = "";
-    [SerializeField]
-    public string jumpAxe = "";
-
-    public float speed = 5;
+	public float speed = 5;
     [Range(1, 20)]
     public float jumpForce = 5;
     public float slideSpeed = 5;
     public float wallJumpLerp = 10;
 
-    private Rigidbody2D rb;
-
+	private Rigidbody2D rb;
     private Collision coll;
 
     public bool canMove = true;
     public bool wallJumped;
     public bool wallSlide;
-
     public float wallJumpAngle = 45;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
+
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collision>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         float moveHorizontal = Input.GetAxis(horizontalAxe);
         float moveVertical = Input.GetAxis(verticalAxe);
 
         Vector2 movement = new Vector3(moveHorizontal * speed, rb.velocity.y);
-
         //rb.velocity = movement;
 
         if (canMove)
@@ -71,7 +64,7 @@ public class PlayerController : MonoBehaviour
             GetComponent<BetterJump>().enabled = true;
         }
 
-        if (Input.GetButtonDown(jumpAxe))
+        if (/*Input.GetButtonDown(jumpAxe)*/Input.GetKeyDown(KeyCode.Z))
         {
             //sur le sol
             if (coll.onGround)
@@ -92,7 +85,6 @@ public class PlayerController : MonoBehaviour
         rb.velocity += dir * jumpForce;
 
         //Debug.Log("velocity : " + rb.velocity);
-
     }
 
     private void WallSlide()
