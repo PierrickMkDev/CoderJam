@@ -128,6 +128,8 @@ MonoBehaviour:
   rb: {fileID: 2909965880958867039}
   platformPrefab: {fileID: 4869235427216853844, guid: 1e08ed3f51db37e489ad6530831e6d4f,
     type: 3}
+  hitEffect: {fileID: 7390346897835782257, guid: 326f5683629f11345acb24cbf4e5def0,
+    type: 3}
   vfxKill: {fileID: 8610047755465041315, guid: bbf65e97b3e7520419d7a85e4270dbf7, type: 3}
   playerTrail: {fileID: 2909965880958867033}
   playerSprite: {fileID: 2909965880958867025}
